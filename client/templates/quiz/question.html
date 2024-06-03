@@ -16,184 +16,32 @@
 
 <body>
     <div class="container">
-        <h2>Multiple Choice Form</h2>
-        <form>
-            <div class="card">
-                <div class="card-header">
-                    Question 1
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Siapakah penemu warna vanta black?</h5>
-                    <blockquote class="blockquote mb-0">
-                        <div class="form-group">
-                            <div class="choice-container">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option1"
-                                        value="option1">
-                                    <label class="form-check-label" for="q1-option1">Option 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option2"
-                                        value="option2">
-                                    <label class="form-check-label" for="q1-option2">Option 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option3"
-                                        value="option3">
-                                    <label class="form-check-label" for="q1-option3">Option 3</label>
-                                </div>
+        <h2>Nama Quiz</h2>
+        <form action="{% url 'submit_quiz' %}" method="post">
+            {% csrf_token %}
+            {% for question in questions %}
+            <div class="form-group">
+                <div class="card">
+                    <div class="card-header">
+                        {{ question.number }}
+                    </div>
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>{{question.question}}</p>
+                            {% for key, value in question.choices.items %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="question{{ question.number }}"
+                                    id="question{{ question.number }}-option{{ key }}" value="{{ key }}">
+                                <label class="form-check-label" for="question{{ question.number }}-option{{ key }}">
+                                    {{ value }}
+                                </label>
                             </div>
-                        </div>
-                    </blockquote>
+                            {% endfor %}
+                        </blockquote>
+                    </div>
                 </div>
             </div>
-            <br>
-            <div class="card">
-                <div class="card-header">
-                    Question 2
-                </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <div class="form-group">
-                            <div class="choice-container">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option1"
-                                        value="option1">
-                                    <label class="form-check-label" for="q1-option1">Option 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option2"
-                                        value="option2">
-                                    <label class="form-check-label" for="q1-option2">Option 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option3"
-                                        value="option3">
-                                    <label class="form-check-label" for="q1-option3">Option 3</label>
-                                </div>
-                            </div>
-                        </div>
-                    </blockquote>
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-header">
-                    Question 3
-                </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <div class="form-group">
-                            <div class="choice-container">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option1"
-                                        value="option1">
-                                    <label class="form-check-label" for="q1-option1">Option 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option2"
-                                        value="option2">
-                                    <label class="form-check-label" for="q1-option2">Option 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option3"
-                                        value="option3">
-                                    <label class="form-check-label" for="q1-option3">Option 3</label>
-                                </div>
-                            </div>
-                        </div>
-                    </blockquote>
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-header">
-                    Question 1
-                </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <div class="form-group">
-                            <div class="choice-container">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option1"
-                                        value="option1">
-                                    <label class="form-check-label" for="q1-option1">Option 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option2"
-                                        value="option2">
-                                    <label class="form-check-label" for="q1-option2">Option 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option3"
-                                        value="option3">
-                                    <label class="form-check-label" for="q1-option3">Option 3</label>
-                                </div>
-                            </div>
-                        </div>
-                    </blockquote>
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-header">
-                    Question 1
-                </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <div class="form-group">
-                            <div class="choice-container">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option1"
-                                        value="option1">
-                                    <label class="form-check-label" for="q1-option1">Option 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option2"
-                                        value="option2">
-                                    <label class="form-check-label" for="q1-option2">Option 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option3"
-                                        value="option3">
-                                    <label class="form-check-label" for="q1-option3">Option 3</label>
-                                </div>
-                            </div>
-                        </div>
-                    </blockquote>
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-header">
-                    Question 1
-                </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <div class="form-group">
-                            <div class="choice-container">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option1"
-                                        value="option1">
-                                    <label class="form-check-label" for="q1-option1">Option 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option2"
-                                        value="option2">
-                                    <label class="form-check-label" for="q1-option2">Option 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="question1" id="q1-option3"
-                                        value="option3">
-                                    <label class="form-check-label" for="q1-option3">Option 3</label>
-                                </div>
-                            </div>
-                        </div>
-                    </blockquote>
-                </div>
-            </div>
-            <br>
-            <!-- Add more questions as needed -->
+            {% endfor %}
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
