@@ -2,7 +2,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon -V",
-    "test": "cross-env NODE_ENV=test jest --detectOpenHandles"
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "@types/redis-mock": "^0.17.3",
@@ -37,6 +38,7 @@
     "mongodb-memory-server": "^9.1.6",
     "nodemailer": "^6.9.12",
     "nodemon": "^3.1.0",
+    "nyc": "^15.1.0",
     "sinon": "^17.0.1",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",

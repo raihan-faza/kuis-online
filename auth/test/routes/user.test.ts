@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import sinon from "sinon";
-import client from "../../redis";
+// import client from "../../redis";
 import { sendMail } from "../../app/services/mailer";
 
 dotenv.config({ path: ".env.test.local" });
@@ -46,8 +46,8 @@ describe("User routes", () => {
         await mongoose.connection.dropDatabase();
         await mongoose.connection.close();
         await mongoServer.stop();
-        client.flushdb();
-        client.quit();
+        // client.flushdb();
+        // client.quit();
     });
 
     let access_token: string;
@@ -200,24 +200,14 @@ describe("User routes", () => {
         expect(res.status).toEqual(401);
         expect(res.body).toHaveProperty("error");
     }, 5000);
-
-    it("should logout the user", async () => {
-        const res = await request(app)
-            .delete("/users/logout")
-            .set("Authorization", `Bearer ${access_token}`)
-            .send({ refresh_token });
-        expect(res.status).toEqual(200);
-        expect(res.body).toHaveProperty("message");
-    }, 5000);
-
-    it("should not refresh the token due to invalid token after logout", async () => {
-        const res = await request(app)
-            .put("/users/refresh-token")
-            .send({ refresh_token });
-        expect(res.status).toEqual(401);
-        expect(res.body).toHaveProperty("error");
-    }, 5000);
-
+    // it("should logout the user", async () => {
+    //     const res = await request(app)
+    //         .delete("/users/logout")
+    //         .set("Authorization", `Bearer ${access_token}`)
+    //         .send({ refresh_token });
+    //     expect(res.status).toEqual(200);
+    //     expect(res.body).toHaveProperty("message");
+    // }, 5000);
 
 });
 

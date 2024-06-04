@@ -3,3 +3,5 @@ node_modules
 .vercel
 .env*.local
 dist
+coverage
+.nyc_output

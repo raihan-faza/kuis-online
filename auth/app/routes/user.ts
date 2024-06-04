@@ -24,8 +24,13 @@ router.put('/refresh-token', async (req: RequestWithUser, res: Response) => {
     try {
         const refreshToken = req.body.refresh_token;
         if (!refreshToken) return res.status(401).json({ error: 'Refresh token is required' });
-        const user = req.user;
-        res.status(200).json({ access_token: jwt.sign({ email: user?.email, id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '10m' }) });
+        try{
+            const user =  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as jwt.JwtPayload;
+            res.status(200).json({ access_token: jwt.sign({ email: user?.email, id: user?.id }, process.env.JWT_SECRET as string, { expiresIn: '10m' }) });
+        }
+        catch(err){
+            return res.status(401).json({ error: 'Refresh token is invalid' });
+        }
     }
     catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -61,7 +66,7 @@ router.post('/signup', validateUserInput, async (req: Request, res: Response) =>
         await newUser.save();
 
         //generate token
-        let access_token = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.JWT_SECRET as string, { expiresIn: '10m' });
+        let access_token = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.JWT_SECRET as string, { expiresIn: '24h' });
         let refresh_token = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: '7d' });
         // client.setex(refresh_token, 604800, JSON.stringify({ refresh_token: refresh_token }));
         res.status(201).json(
