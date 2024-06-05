@@ -1,6 +1,21 @@
-from django.shortcuts import render, redirect
-from admin_datta.forms import RegistrationForm, LoginForm, UserPasswordChangeForm, UserPasswordResetForm, UserSetPasswordForm
-from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordResetConfirmView, PasswordResetView
+from django.shortcuts import (
+    render,
+    redirect
+)
+from admin_datta.forms import (
+    RegistrationForm,
+    LoginForm,
+    UserPasswordChangeForm,
+    UserPasswordResetForm,
+    UserSetPasswordForm
+)
+from django.contrib.auth.views import (
+    LoginView,
+    PasswordChangeView,
+    PasswordResetConfirmView,
+    PasswordResetView
+)
+
 from django.views.generic import CreateView
 from django.contrib.auth import logout
 
@@ -8,21 +23,26 @@ from django.contrib.auth.decorators import login_required
 
 from .models import *
 
+from httpx import (
+    post,
+    get
+)
+
 
 def index(request):
     quizzes = [
         {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
         {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
-    #     # Add more quizzes as needed
+        #     # Add more quizzes as needed
     ]
 
     context = {
         'segment': 'index',
         'quizzes': quizzes,
-        #'products' : Product.objects.all()
+        # 'products' : Product.objects.all()
     }
     return render(request, "pages/index.html", context)
-        # 'products' : Product.objects.all()
+    # 'products' : Product.objects.all()
 
 
 def tables(request):
@@ -55,7 +75,12 @@ def attempt_quiz(request):
             },
         ]
     }
-    return render(request, "/home/lahh/projects/scalable/client/templates/quiz/question.html", context)
+    return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context)
+
+
+def create_question(request):
+
+    return render(request=request, template_name="quiz/add_question.html")
 
 
 def submit_quiz(request):
