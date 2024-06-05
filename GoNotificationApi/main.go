@@ -6,6 +6,8 @@ import (
 	"notification/controller"
 	"notification/initializer"
 	"notification/request"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +48,7 @@ func main() {
 
 	})
 
-	r.POST("/notif/auth/registration", func(ctx *gin.Context) {
+	r.POST("/notif/quiz/enroll", func(ctx *gin.Context) {
 		var request request.QuizRequest
 		err := ctx.BindJSON(&request)
 		if err != nil {
@@ -69,22 +71,21 @@ func main() {
         </html>
     `, request.Recipient, request.QuizName, request.StartTime, request.StartTime)
 		controller.SendNotification(request.Recipient, subject, msg)
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "Notification Sent",
-		})
-
-	})
-	r.POST("/notif/quiz/reminder", func(ctx *gin.Context) {
-		var request request.QuizRequest
-		err := ctx.BindJSON(&request)
+		slice_time := strings.Split(request.StartTime, "-")
+		day, err := strconv.Atoi(slice_time[0])
 		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": "Bad Request",
-			})
-			return
+			panic(err)
 		}
-		subject := "Quiz Created"
-		msg := fmt.Sprintf(`
+		month, err := strconv.Atoi(slice_time[1])
+		if err != nil {
+			panic(err)
+		}
+		year, err := strconv.Atoi(slice_time[2])
+		if err != nil {
+			panic(err)
+		}
+		subject_1 := "Quiz Enrollment"
+		msg_1 := fmt.Sprintf(`
         <!DOCTYPE html>
         <html>
         <body>
@@ -96,12 +97,62 @@ func main() {
         </body>
         </html>
     `, request.Recipient, request.QuizName, request.StartTime, request.StartTime)
-		controller.SendNotification(request.Recipient, subject, msg)
+		controller.ScheduleMail(
+			request.Recipient, subject_1, msg_1,
+			day, month, year,
+			0, 0, 0,
+		)
 		ctx.JSON(http.StatusOK, gin.H{
 			"message": "Notification Sent",
 		})
 
 	})
+	/*
+			r.POST("/notif/quiz/reminder", func(ctx *gin.Context) {
+				var request request.QuizRequest
+				err := ctx.BindJSON(&request)
+				if err != nil {
+					ctx.JSON(http.StatusBadRequest, gin.H{
+						"message": "Bad Request",
+					})
+					return
+				}
+				slice_time := strings.Split(request.StartTime, "-")
+				day, err := strconv.Atoi(slice_time[0])
+				if err != nil {
+					panic(err)
+				}
+				month, err := strconv.Atoi(slice_time[1])
+				if err != nil {
+					panic(err)
+				}
+				year, err := strconv.Atoi(slice_time[2])
+				if err != nil {
+					panic(err)
+				}
+				subject := "Quiz Created"
+				msg := fmt.Sprintf(`
+		        <!DOCTYPE html>
+		        <html>
+		        <body>
+		            <h1>Hi %s</h1>
+					<h2>Don't forget you have quiz soon. Here's the details</h2>
+		            <p>Quiz Name: %s</p>
+		            <p>Start Time: %s</p>
+		            <p>Stop Time: %s</p>
+		        </body>
+		        </html>
+		    `, request.Recipient, request.QuizName, request.StartTime, request.StartTime)
+				controller.ScheduleMail(
+					request.Recipient, subject, msg,
+					day, month, year,
+					0, 0, 0,
+				)
+				ctx.JSON(http.StatusOK, gin.H{
+					"message": "Notification Sent",
+				})
+			})
+	*/
 	r.POST("/notif/register/verification", func(ctx *gin.Context) {
 		var request request.RegisterRequest
 		err := ctx.BindJSON(&request)
@@ -111,7 +162,7 @@ func main() {
 			})
 			return
 		}
-		subject := "Quiz Created"
+		subject := "Account Registered"
 		msg := fmt.Sprintf(`
         <!DOCTYPE html>
         <html>
@@ -131,4 +182,6 @@ func main() {
 
 	})
 	r.Run()
+
+	select {}
 }
