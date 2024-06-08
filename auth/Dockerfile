@@ -1,0 +1,34 @@
+# Use an official Node.js runtime as the base image
+FROM node:18.17.0-alpine
+WORKDIR /app
+
+# Set the working directory in the Docker container
+ENV MONGODB_URI mongodb+srv://khairulihsannudin704:khairulihsannudin704@simpledb.lxm2xlx.mongodb.net/?retryWrites=true&w=majority&appName=simpledb
+ENV JWT_SECRET ac92cf37c4cffca43231666524e8138139bdb08b35fbba89ea21f77d5af89e31
+ENV REFRESH_TOKEN_SECRET 432cc7783ed2160449f828120275816eb14880662ffd6945bed031f3014dd555
+ENV SALT 12
+ENV RECOVERY_CODE_SENDGRID AGWYXCK6Y27UC88EHTQ7UKVP
+ENV EMAIL xanaputra@gmail.com
+ENV PASSWORD bemp obbe ongy ojms
+ENV VERIFICATION_SECRET cb03689780d6aa7eb947523f84703cee95b27fee7e6ad93628eb2ed594acad6001de7a701c142b7ed72378fa2d2784a3ad6b090e7288d046ea0d9a0344022d948473c1761f10b6d7ae891df37ec35761894c9ba18f6ce0330e50b38ed82b05c08a0cd96303ec419616952f0f01ef7c2f68a8550833d9dfad5287a72f9cfd1e8dcb93c803115986304e80ded310d0d314b200eb6765470e25aff99c305bc361e1400a9b1b5e0168a252157b78a76e1cc6a0b6037914bcdeec769ccee5e06fac910222126c35f5f82e5cb171f1ede2211416b6ed2ec692e107287741edd349ffa6452918d0383d132ce16028de049b2b751210d45d941924a190f76f12a7c432d7735041611fec686ed4388c858777d44995d7fd2b59890dc529c9618ff8bf131dd3e677b518827d0f6c84777c290ce4c8d6190292c8556eef92975fd526ebaccd68c608e45a7bf0775f742729cb923d9d6be5771eaefb28c4a256286f536811eb37d9a12a7ee860b024e7c7cd5c84dfbb5906ae5db9ea298bdaa0e645db7301dcc3fb12e9d669779abeb75fdfa7c73a4a035c0b521171a2514411fdc46d95e8384079a1fd51ccb23600df8ffdc27977360c0c8cf46129f01039e0cc003bef20141e0ff5a24bf11105c085200bcbe393759584602c94bb057d8281e81c74bd65d3795b29a4ca97b6e9734b8c79318ed9b760abba227fc10a811dfdffc928d4bff4
+
+# Copy package.json and package-lock.json into the Docker container
+
+# Install the application's dependencies inside the Docker container
+COPY package*.json ./
+RUN npm install 
+RUN npm install -g typescript
+
+# Copy the rest of the application into the Docker container
+COPY . .
+
+# Compile TypeScript to JavaScript
+RUN npm run build
+COPY ./dist /app/dist
+
+
+# Expose the port that the application runs on
+EXPOSE 3000
+CMD [ "npm", "run", "start" ]
+
+# Define the command to run the application
