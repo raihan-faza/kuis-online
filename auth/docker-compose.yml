@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  auth:
+    image: auth:latest
+    build: ./
+    ports:
+      - "3009:3000"
+    networks:
+      - auth-network
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    # restart: always
+
+networks:
+  auth-network:
