@@ -45,6 +45,18 @@ def index(request):
     # 'products' : Product.objects.all()
 
 
+def dashboard(request):
+    quizzes = [
+        {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
+        {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
+        #     # Add more quizzes as needed
+    ]
+    context = {
+        'segment': 'dashboard',
+        'quizzes': quizzes,
+    }
+    return render(request, "pages/dashboard.html", context)
+
 def tables(request):
     context = {
         'segment': 'tables'
