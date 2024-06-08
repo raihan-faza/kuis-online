@@ -89,6 +89,11 @@ def attempt_quiz(request):
     }
     return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context)
 
+def login(request):
+    context = {
+        'segment': 'login'
+    }
+    return render(request, "pages/login.html", context)
 
 def create_question(request):
 
