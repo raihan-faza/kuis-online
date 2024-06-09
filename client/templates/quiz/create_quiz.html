@@ -29,7 +29,8 @@
 <body>
     <div class="card p-5 custom-card rounded-5">
         <h2 class="text-center mb-4">Question Form</h2>
-        <form method="post" action="your_action_here">
+        <form method="post" action="{% url 'submit_quiz' %}">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="quiz-name">Quiz Name:</label>
                 <input type="text" class="form-control" name="quiz_name" placeholder="Enter quiz name">
