@@ -57,6 +57,7 @@ def dashboard(request):
     }
     return render(request, "pages/dashboard.html", context)
 
+
 def tables(request):
     context = {
         'segment': 'tables'
@@ -95,9 +96,8 @@ def login(request):
     }
     return render(request, "pages/login.html", context)
 
-def create_question(request):
-
-    return render(request=request, template_name="quiz/add_question.html")
+def create_quiz(request):
+    return render(request=request, template_name="quiz/create_quiz.html")
 
 
 def submit_quiz(request):

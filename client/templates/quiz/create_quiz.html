@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .custom-card {
+            width: 900px;
+        }
+
+        #question-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card p-5 custom-card rounded-5">
+        <h2 class="text-center mb-4">Question Form</h2>
+        <form method="post" action="your_action_here">
+            <div class="form-group">
+                <label for="quiz-name">Quiz Name:</label>
+                <input type="text" class="form-control" name="quiz_name" placeholder="Enter quiz name">
+            </div>
+            <div id="question-container">
+                <div class="question mb-4">
+                    <h3>Question:</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="question[]" placeholder="Enter question">
+                    </div>
+                    <h3>Options:</h3>
+                    <div class="options-container">
+                        <div class="form-group">
+                            <input type="text" class="form-control option" name="option[]" placeholder="Enter option">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control option" name="option[]" placeholder="Enter option">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control option" name="option[]" placeholder="Enter option">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control option" name="option[]" placeholder="Enter option">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="correct-option">Correct Option:</label>
+                        <select class="form-control correct-option" name="correct_option">
+                            <option value="">Select correct option</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary mt-4 " id="add-question">Add Question</button>
+            <button type="submit" class="btn btn-success mt-4">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#add-question").click(function () {
+                var newQuestion = $('<div class="question mb-4">' +
+                    '<h3>Question:</h3>' +
+                    '<div class="form-group">' +
+                    '<input type="text" class="form-control" name="question[]" placeholder="Enter question">' +
+                    '</div>' +
+                    '<h3>Options:</h3>' +
+                    '<div class="options-container">' +
+                    '<div class="form-group">' +
+                    '<input type="text" class="form-control option" name="option[]" placeholder="Enter option">' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<input type="text" class="form-control option" name="option[]" placeholder="Enter option">' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<input type="text" class="form-control option" name="option[]" placeholder="Enter option">' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<input type="text" class="form-control option" name="option[]" placeholder="Enter option">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="correct-option">Correct Option:</label>' +
+                    '<select class="form-control correct-option" name="correct_option">' +
+                    '<option value="">Select correct option</option>' +
+                    '</select>' +
+                    '</div>' +
+                    '</div>');
+
+                $("#question-container").append(newQuestion);
+            });
+
+            $(document).on('input', '.option', function () {
+                var options = [];
+                var optionContainer = $(this).closest('.question').find('.option');
+                optionContainer.each(function () {
+                    var optionValue = $(this).val().trim();
+                    if (optionValue !== "") {
+                        options.push(optionValue);
+                    }
+                });
+                var correctOptionSelect = $(this).closest('.question').find('.correct-option');
+                correctOptionSelect.empty().append('<option value="">Select correct option</option>');
+                options.forEach(function (option) {
+                    correctOptionSelect.append('<option value="' + option + '">' + option + '</option>');
+                });
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
