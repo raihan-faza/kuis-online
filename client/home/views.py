@@ -28,6 +28,12 @@ from httpx import (
     get
 )
 
+from django.views.decorators.http import require_POST
+
+import json
+
+from django.http.response import JsonResponse
+
 
 def index(request):
     quizzes = [
@@ -100,5 +106,29 @@ def create_quiz(request):
     return render(request=request, template_name="quiz/create_quiz.html")
 
 
+@require_POST
 def submit_quiz(request):
-    return
+    quiz_name = request.POST.get('quiz_name')
+    questions = request.POST.getlist('question[]')
+    options = request.POST.getlist('option[]')
+    correct_options = request.POST.getlist('correct_option')
+
+    quiz_data = {
+        'quiz_name': quiz_name,
+        'questions': []
+    }
+
+    for i, question_text in enumerate(questions):
+        question_dict = {
+            'question_text': question_text,
+            'options': options[i*4:i*4+4],
+            'correct_option': correct_options[i]
+        }
+        quiz_data['questions'].append(question_dict)
+
+    json_data = json.dumps(quiz_data)
+    try:
+        post(url="urlirfan", data=json_data)
+    except:
+        return JsonResponse({"Message": "failed to create quiz"}, safe=False)
+    return JsonResponse(json_data, safe=False)
