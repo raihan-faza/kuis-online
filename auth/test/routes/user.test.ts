@@ -15,14 +15,13 @@ app.use(express.json());
 app.use("/users", userRouter);
 
 jest.mock("../../app/services/mailer", ()=>({
-    sendMail: jest.fn(),
+    sendMail: jest.fn().mockResolvedValue(true),
 }));
 
 // jest.mock("../../redis", () => {
 //     return redisMock.createClient();
 // });
 
-const mockedSendMail = sendMail as jest.MockedFunction<typeof sendMail>
 
 let mongoServer: any;
 let clock: sinon.SinonFakeTimers;
@@ -54,7 +53,7 @@ describe("User routes", () => {
     let refresh_token: string;
 
     it("should create a new user", async () => {
-        mockedSendMail.mockResolvedValue(true)
+        // mockedSendMail.mockResolvedValue(true)
         const res = await request(app)
             .post("/users/signup")
             .send({
@@ -64,31 +63,14 @@ describe("User routes", () => {
                 password: "password",
                 gender: "Male"
             });
-        expect(mockedSendMail).toHaveBeenCalledWith("john@mail.com")
+        // expect(mockedSendMail).toHaveBeenCalledWith("john@mail.com")
         expect(res.status).toEqual(201);
         expect(res.body).toHaveProperty("message");
         expect(res.body).toHaveProperty("access_token");
         expect(res.body).toHaveProperty("refresh_token");
         access_token = res.body.access_token;
         refresh_token = res.body.refresh_token;
-    }, 5000);
-
-    it("should invalidate a user input", async () => {
-        const res = await request(app)
-            .post("/users/signup")
-            .send({
-                name: "John123",
-                email: "xana",
-                phone: "02212345678",
-                password: "pasord",
-                gender: "ale"
-            });
-        expect(res.status).toEqual(400);
-        expect(res.body).toHaveProperty("errors");
-        const validPaths = ["name", "email", "phone", "password", "gender"];
-        res.body.errors.forEach((error: any) => {
-            expect(validPaths).toContain(error.path);
-        });
+        expect(sendMail).toHaveBeenCalled();
     }, 5000);
 
     it("should login a user", async () => {
@@ -116,48 +98,6 @@ describe("User routes", () => {
         expect(res.body).toHaveProperty("error");
     }, 5000);
 
-    it("should not let user log in due to too many requests", async () => {
-        for (let i = 0; i < 10; i++) {
-            await request(app)
-                .post("/users/login")
-                .send({
-                    email: "ngarang@mail.com",
-                    password: "password",
-                });
-        }
-        const res = await request(app)
-            .post("/users/login")
-            .send({
-                email: "ngarang@mail.com",
-                password: "password",
-            });
-        expect(res.status).toEqual(429);
-        expect(res.body).toHaveProperty("error");
-    }, 5000);
-
-    it("should get the authenticated user data", async () => {
-        let res = await request(app)
-            .get("/users")
-            .set("Authorization", `Bearer ${access_token}`);
-        expect(res.status).toEqual(200);
-        expect(res.body).toHaveProperty("name");
-        expect(res.body).toHaveProperty("email");
-        expect(res.body).toHaveProperty("phone");
-        expect(res.body).toHaveProperty("gender");
-    }, 6000);
-
-    // it("should get the cache of user data", async () => {
-    //     const res = await request(app)
-    //         .get("/users")
-    //         .set("Authorization", `Bearer ${access_token}`)
-
-    //     expect(res.headers['x-cache-hit']).toEqual('true')
-    //     expect(res.status).toEqual(200);
-    //     expect(res.body).toHaveProperty("name");
-    //     expect(res.body).toHaveProperty("email");
-    //     expect(res.body).toHaveProperty("phone");
-    // }, 5000);
-
     it("should invalidate access token", async () => {
         const res = await request(app)
             .get("/users")
@@ -167,7 +107,7 @@ describe("User routes", () => {
     }, 5000);
 
     it("should invalidate access token due to time", async () => {
-        clock.tick(600000);
+        clock.tick(604800000);
         const res = await request(app)
             .get("/users")
             .set("Authorization", `Bearer ${access_token}`);

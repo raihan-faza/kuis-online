@@ -75,7 +75,9 @@ def index(request):
 
 def dashboard(request):
     if 'access_token' not in request.session:
-        access_token = request.headers.get('Access-Token')
+        access_token = request.META.get('Access-Token')
+        print(request.META.get('Access-Token'))
+        print(access_token)
         if access_token is None:
             return redirect('auth')
         request.session['access_token'] = access_token

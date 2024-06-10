@@ -19,8 +19,8 @@ RUN apk --no-cache add ssmtp
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 # Expose port 3000 (if needed)
-EXPOSE 3000
-EXPOSE 8080
+# EXPOSE 3000
+EXPOSE 8081
 
 # Set the working directory
 WORKDIR /app

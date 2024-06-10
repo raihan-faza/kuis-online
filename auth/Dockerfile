@@ -24,12 +24,8 @@ RUN npm install -g typescript
 COPY . .
 # Compile TypeScript to JavaScript
 RUN npm run build
-COPY ./dist /app/dist
+# COPY ./dist /app/dist
 
-RUN apk --no-cache add ssmtp
-
-# Set up ssmtp configuration
-COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 # Expose the port that the application runs on
 EXPOSE 3000
 CMD [ "npm", "run", "start" ]
