@@ -1,3 +1,4 @@
+/* kuis-online/client/static/css/styles.css */
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
@@ -9,7 +10,7 @@ body {
 }
 
 #leaderboard-container {
-    width: 400px;
+    width: 600px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -45,9 +46,6 @@ body {
 
 #leaderboard-table tbody tr {
     transition: background-color 0.3s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 #leaderboard-table tbody tr:nth-child(odd) {
@@ -62,11 +60,9 @@ body {
     font-size: 18px;
     font-weight: bold;
     margin-right: 8px;
-    width: 10%;
 }
 
 #leaderboard-table tbody tr td.name {
-    flex-grow: 1;
     text-align: left;
 }
 

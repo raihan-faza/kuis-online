@@ -1,27 +1,35 @@
+<!-- kuis-online/client/templates/leaderboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Leaderboard for Quiz {{ quiz_id }}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <div id="leaderboard-container">
-        <h1>Top Users</h1>
+        <h1>Leaderboard for Quiz {{ quiz_id }}</h1>
         <table id="leaderboard-table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Points</th>
+                    <th>Grade</th>
                     <th>Timestamp</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                {% for entry in leaderboard_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ entry.user_id }}</td>
+                        <td>{{ entry.grade }}</td>
+                        <td>{{ entry.timestamp }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
-
-    <script src="/static/js/leaderboard.js"></script>
 </body>
 </html>

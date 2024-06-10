@@ -35,6 +35,27 @@ import json
 
 from django.http.response import JsonResponse
 
+# kuis-online/client/views.py
+from django.shortcuts import render
+from django.conf import settings
+from pymongo import DESCENDING
+
+def leaderboard_view(request, quiz_id):
+    collection = settings.MONGO_COLLECTION
+    leaderboard_data = collection.find({'quiz_id': quiz_id}).sort([
+        ('grade', DESCENDING),
+        ('timestamp', DESCENDING)
+    ])
+
+    context = {
+        'leaderboard_data': leaderboard_data,
+        'quiz_id': quiz_id
+    }
+    return render(request, 'leaderboard.html', context)
+
+
+
+
 
 def index(request):
     quizzes = [
@@ -54,21 +75,25 @@ def index(request):
 
 def dashboard(request):
     if 'access_token' not in request.session:
-        access_token = request.headers.get('Access-Token')
-        if access_token is None:
-            return redirect('auth')
-        request.session['access_token'] = access_token
-        request.session['refresh_token'] = request.headers.get('Refresh-Token')
-    quizzes = [
-        {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
-        {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
-        #     # Add more quizzes as needed
-    ]
-    context = {
-        'segment': 'dashboard',
-        'quizzes': quizzes,
-    }
-    return render(request, "pages/dashboard.html", context)
+        return redirect('auth')
+    
+    try:
+        response = get('http://localhost:5000/api/Quiz')
+        quizzes = response.json()
+        
+        # quizzes = [
+        #     {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
+        #     {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
+        #     #     # Add more quizzes as needed
+        # ]
+        context = {
+            'segment': 'dashboard',
+            'quizzes': quizzes,
+        }
+        return render(request, "pages/dashboard.html", context)
+    except Exception as e:
+        print(e)
+        return redirect('index')
 
 
 def tables(request):
