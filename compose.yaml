@@ -102,6 +102,13 @@ services:
       - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/mydatabase
     networks:
       - quiz-app-network
+  leaderboard:
+    image: leaderboard:latest
+    build: ./leaderboard_project
+    ports:
+      - "1000:1000"
+    networks:
+      - quiz-app-network
 volumes:
   mongo-data:
 networks:
