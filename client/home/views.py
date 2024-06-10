@@ -79,13 +79,13 @@ def dashboard(request):
     
     try:
         response = get('http://localhost:5000/api/Quiz')
-        quizzes = response.json()
+        # quizzes = response.json()
         
-        # quizzes = [
-        #     {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
-        #     {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
-        #     #     # Add more quizzes as needed
-        # ]
+        quizzes = [
+            {'Id':'Capek1','Name': 'Quiz 1', 'Description': 'This is quiz 1', 'CreatedBy': 'User 1'},
+            {'Id':'Capek2','Name': 'Quiz 2', 'Description': 'This is quiz 2', 'CreatedBy': 'User 2'},
+            #     # Add more quizzes as needed
+        ]
         context = {
             'segment': 'dashboard',
             'quizzes': quizzes,
@@ -199,8 +199,11 @@ def signup(request):
             return redirect('auth')
 
 
-def create_quiz(request):
-    return render(request=request, template_name="quiz/create_quiz.html")
+def create_quiz(request, Id):
+    context = {
+        'quiz_id': Id
+    }
+    return render(request=request, template_name="quiz/create_quiz.html", context=context)
 
 
 def leaderboard(request):
