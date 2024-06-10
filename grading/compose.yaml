@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongodb:latest
+    ports:
+      - "5432:5432"
+    environment:
+      MONGODB_USER: user
+      MONGODB_PASSWORD: password
+      MONGODB_DB: mydatabase
+    volumes:
+      - ./mongo_db_data:/var/lib/mongodb/data
+  grading:
+    image: grading:latest
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      - DATABASE_URL=mongodb+srv://asyrafna:nugiGOJ2Gcu8nf59@quiz.skssdkk.mongodb.net/?retryWrites=true&w=majority&appName=Quiz
