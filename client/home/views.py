@@ -65,23 +65,25 @@ def index(request):
 
 def dashboard(request):
     if 'access_token' not in request.session:
-        access_token = request.META.get('Access-Token')
-        print(request.META.get('Access-Token'))
-        print(access_token)
-        if access_token is None:
-            return redirect('auth')
-        request.session['access_token'] = access_token
-        request.session['refresh_token'] = request.headers.get('Refresh-Token')
-    quizzes = [
-        {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
-        {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
-        #     # Add more quizzes as needed
-    ]
-    context = {
-        'segment': 'dashboard',
-        'quizzes': quizzes,
-    }
-    return render(request, "pages/dashboard.html", context)
+        return redirect('auth')
+    
+    try:
+        response = get('http://localhost:5000/api/Quiz')
+        # quizzes = response.json()
+        
+        quizzes = [
+            {'Id':'Capek1','Name': 'Quiz 1', 'Description': 'This is quiz 1', 'CreatedBy': 'User 1'},
+            {'Id':'Capek2','Name': 'Quiz 2', 'Description': 'This is quiz 2', 'CreatedBy': 'User 2'},
+            #     # Add more quizzes as needed
+        ]
+        context = {
+            'segment': 'dashboard',
+            'quizzes': quizzes,
+        }
+        return render(request, "pages/dashboard.html", context)
+    except Exception as e:
+        print(e)
+        return redirect('index')
 
 
 def tables(request):
@@ -187,8 +189,11 @@ def signup(request):
             return redirect('auth')
 
 
-def create_quiz(request):
-    return render(request=request, template_name="quiz/create_quiz.html")
+def create_quiz(request, Id):
+    context = {
+        'quiz_id': Id
+    }
+    return render(request=request, template_name="quiz/create_quiz.html", context=context)
 
 
 def leaderboard(request):
@@ -196,24 +201,28 @@ def leaderboard(request):
 
 
 @require_POST
-def submit_quiz(request):
+def submit_create_quiz(request):
     quiz_name = request.POST.get('quiz_name')
     questions = request.POST.getlist('question[]')
     options = request.POST.getlist('option[]')
     correct_options = request.POST.getlist('correct_option')
-
-    quiz_data = {
-        'quiz_name': quiz_name,
-        'questions': []
-    }
     try:
-        response = post(url="http://localhost:8081/quiz", data={"Id": "1", "Name": f"{quiz_name}", "Description": "test desc",
-                                                                "DurationMinute": "20", "OpenTime": "2024-09-02T13:13:13.866Z", "CloseTime": "2024-10-02T13:13:13.866Z"})
-        return response.json()
+        quiz_response = post(url="http://localhost:8080/Quiz", json={"Name": f"{quiz_name}", "Description": "test desc",
+                                                                     "DurationMinute": "20", "OpenTime": "2024-09-02T13:13:13.866Z", "CloseTime": "2024-10-02T13:13:13.866Z"})
+        quiz_id = quiz_response.json()['Id']
     except:
         return JsonResponse(data={"message": "failed to create quiz"})
 
     for i, question_text in enumerate(questions):
+        question_response = post(
+            url=f"http://localhost:8080/Quiz/{quiz_id}/question", json={"Prompt": f"{question_text}", "CorrectOptionId": None})
+        question_id = question_response.json()['Id']
+        for i, option_text in enumerate(options):
+            options_response = post(
+                url=f"http://localhost:8080/Quiz/{question_id}/option", json={"Text": f"{option_text}"})
+        post(
+            url=f"http://localhost:8080/{quiz_id}/question/{question_id}", json={"Prompt": f"{question_response.json()["Prompt"]}", "CorrectOptions": f"{correct_options[i]}"})
+    '''
         question_dict = {
             'question_text': question_text,
             'options': options[i*4:i*4+4],
@@ -222,7 +231,9 @@ def submit_quiz(request):
         quiz_data['questions'].append(question_dict)
 
     json_data = json.dumps(quiz_data)
-    return JsonResponse(json_data, safe=False)
+       '''
+
+    return redirect('dashboard')
 
 
 '''
@@ -230,4 +241,14 @@ def submit_quiz(request):
         post(url="http://localhost:5000", data=json_data)
     except:
         return JsonResponse({"Message": "failed to create quiz"}, safe=False)
+'''
+
+'''
+@require_POST
+def submit_add_question(request, id):
+    questions = request.POST.getlist('question[]')
+    options = request.POST.getlist('option[]')
+    correct_options = request.POST.getlist('correct_option')
+    return
+
 '''
