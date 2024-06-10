@@ -6,7 +6,7 @@ using Moq;
 
 namespace QuizServiceAPI.Services;
 
-public class QuizService : IQuizService
+public class QuizService
 {
     private readonly IMongoCollection<Quiz> _quizCollection;
     private readonly IMongoCollection<Question> _questionsCollection;

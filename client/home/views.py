@@ -54,23 +54,25 @@ def index(request):
 
 def dashboard(request):
     if 'access_token' not in request.session:
-        access_token = request.META.get('Access-Token')
-        print(request.META.get('Access-Token'))
-        print(access_token)
-        if access_token is None:
-            return redirect('auth')
-        request.session['access_token'] = access_token
-        request.session['refresh_token'] = request.headers.get('Refresh-Token')
-    quizzes = [
-        {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
-        {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
-        #     # Add more quizzes as needed
-    ]
-    context = {
-        'segment': 'dashboard',
-        'quizzes': quizzes,
-    }
-    return render(request, "pages/dashboard.html", context)
+        return redirect('auth')
+    
+    try:
+        response = get('http://localhost:5000/api/Quiz')
+        quizzes = response.json()
+        
+        # quizzes = [
+        #     {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
+        #     {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
+        #     #     # Add more quizzes as needed
+        # ]
+        context = {
+            'segment': 'dashboard',
+            'quizzes': quizzes,
+        }
+        return render(request, "pages/dashboard.html", context)
+    except Exception as e:
+        print(e)
+        return redirect('index')
 
 
 def tables(request):

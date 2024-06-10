@@ -22,6 +22,10 @@
         </div>
       </div>
     </div>
+    {% empty %}
+    <div class="col-12">
+      <h3>There is no quiz available at the moment.</h3>
+    </div>
       {% endfor %}
       {% include "pages/components/modal.html"%}
     </div>
