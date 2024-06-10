@@ -230,8 +230,7 @@ def submit_create_quiz(request):
         for i, option_text in enumerate(options):
             options_response = post(
                 url=f"http://localhost:8080/Quiz/{question_id}/option", json={"Text": f"{option_text}"})
-        post(
-            url=f"http://localhost:8080/{quiz_id}/question/{question_id}", json={"Prompt": f"{question_response.json()["Prompt"]}", "CorrectOptions": f"{correct_options[i]}"})
+        post(url=f"http://localhost:8080/{quiz_id}/question/{question_id}", json={"Prompt": f"{question_response.json()["Prompt"]}", "CorrectOptions": f"{correct_options[i]}"})
     '''
         question_dict = {
             'question_text': question_text,
