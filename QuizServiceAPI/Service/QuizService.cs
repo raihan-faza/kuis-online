@@ -2,10 +2,11 @@ using QuizServiceAPI.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using Moq;
 
 namespace QuizServiceAPI.Services;
 
-public class QuizService
+public class QuizService : IQuizService
 {
     private readonly IMongoCollection<Quiz> _quizCollection;
     private readonly IMongoCollection<Question> _questionsCollection;
@@ -28,6 +29,13 @@ public class QuizService
 
         _optionsCollection = mongoDatabase.GetCollection<Option>(
             quizServiceDatabaseSettings.Value.OptionsCollectionName);
+    }
+
+    public QuizService()
+    {
+        _quizCollection = Mock.Of<IMongoCollection<Quiz>>();
+        _questionsCollection = Mock.Of<IMongoCollection<Question>>();
+        _optionsCollection = Mock.Of<IMongoCollection<Option>>();
     }
 
     // Quiz
