@@ -107,31 +107,30 @@ func main() {
 		})
 
 	})
-	/*
-			r.POST("/notif/quiz/reminder", func(ctx *gin.Context) {
-				var request request.QuizRequest
-				err := ctx.BindJSON(&request)
-				if err != nil {
-					ctx.JSON(http.StatusBadRequest, gin.H{
-						"message": "Bad Request",
-					})
-					return
-				}
-				slice_time := strings.Split(request.StartTime, "-")
-				day, err := strconv.Atoi(slice_time[0])
-				if err != nil {
-					panic(err)
-				}
-				month, err := strconv.Atoi(slice_time[1])
-				if err != nil {
-					panic(err)
-				}
-				year, err := strconv.Atoi(slice_time[2])
-				if err != nil {
-					panic(err)
-				}
-				subject := "Quiz Created"
-				msg := fmt.Sprintf(`
+	r.POST("/notif/quiz/reminder", func(ctx *gin.Context) {
+		var request request.QuizRequest
+		err := ctx.BindJSON(&request)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"message": "Bad Request",
+			})
+			return
+		}
+		slice_time := strings.Split(request.StartTime, "-")
+		day, err := strconv.Atoi(slice_time[0])
+		if err != nil {
+			panic(err)
+		}
+		month, err := strconv.Atoi(slice_time[1])
+		if err != nil {
+			panic(err)
+		}
+		year, err := strconv.Atoi(slice_time[2])
+		if err != nil {
+			panic(err)
+		}
+		subject := "Quiz Created"
+		msg := fmt.Sprintf(`
 		        <!DOCTYPE html>
 		        <html>
 		        <body>
@@ -143,16 +142,15 @@ func main() {
 		        </body>
 		        </html>
 		    `, request.Recipient, request.QuizName, request.StartTime, request.StartTime)
-				controller.ScheduleMail(
-					request.Recipient, subject, msg,
-					day, month, year,
-					0, 0, 0,
-				)
-				ctx.JSON(http.StatusOK, gin.H{
-					"message": "Notification Sent",
-				})
-			})
-	*/
+		controller.ScheduleMail(
+			request.Recipient, subject, msg,
+			day, month, year,
+			0, 0, 0,
+		)
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "Notification Sent",
+		})
+	})
 	r.POST("/notif/register/verification", func(ctx *gin.Context) {
 		var request request.RegisterRequest
 		err := ctx.BindJSON(&request)

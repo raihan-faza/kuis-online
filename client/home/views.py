@@ -20,6 +20,7 @@ from django.views.generic import CreateView
 from django.contrib.auth import logout
 
 from django.contrib.auth.decorators import login_required
+import requests
 
 from .models import *
 
@@ -96,15 +97,33 @@ def attempt_quiz(request):
     }
     return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context)
 
-def login(request):
+def auth(request):
     context = {
         'segment': 'login'
     }
     return render(request, "pages/login.html", context)
 
+def login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            response = requests.post('http://localhost:5000/auth/users/login', json={'email': email, 'password': password})
+            if response.status_code == 200:
+                data = response.json()
+                print(data)
+                request.session['access_token'] = data['access_token']
+                request.session['refresh_token'] = data['refresh_token']
+                return redirect('dashboard')
+            else:
+                return redirect('auth')
+        except:
+            return redirect('auth')
 def create_quiz(request):
     return render(request=request, template_name="quiz/create_quiz.html")
 
+def leaderboard(request):
+    return render(request=request, template_name="pages/Leaderboard.html")
 
 @require_POST
 def submit_quiz(request):

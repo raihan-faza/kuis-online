@@ -45,9 +45,7 @@ router.post('/signup', validateUserInput, async (req: Request, res: Response) =>
         const {
             name,
             email,
-            phone,
             password,
-            gender
         } = req.body;
 
         //check if user already exists
@@ -59,7 +57,7 @@ router.post('/signup', validateUserInput, async (req: Request, res: Response) =>
         const hashedPassword = await bcrypt.hash(password, salt);
 
         //send email verification
-        const data = { name, email, phone, password: hashedPassword, gender, verified: false}
+        const data = { name, email, password: hashedPassword, verified: false}
         const newUser = new User(data);
         const isSent = await sendMail(data.email);
         if (!isSent) return res.status(500).json({ error: 'Error sending verification email' });
@@ -112,7 +110,7 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
         if (!validPassword || !user) return res.status(401).json({ error: 'Invalid credentials' });
 
         //generate token if valid so that the token can be stored in session/local storage
-        const access_token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '10m' })
+        const access_token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '24h' })
         const refresh_token = jwt.sign({ email: user.email, id: user._id }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: '7d' })
         // client.setex(refresh_token, 604800, JSON.stringify({ refresh_token: refresh_token }));
         res.status(200).json(

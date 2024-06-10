@@ -3,7 +3,7 @@ services:
   notification:
     image: golang-notification:latest
     deploy:
-      replicas: 3
+      replicas: 2
       restart_policy:
         condition: on-failure
     ports:
