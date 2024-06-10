@@ -3,11 +3,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const quizId = localStorage.getItem('quiz_id');
 
     if (quizId) {
+       
         fetch(`/leaderboard/${quizId}`)
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector("#leaderboard-table tbody");
-                tableBody.innerHTML = ""; // Clear existing rows
+                tableBody.innerHTML = ""; 
                 data.forEach((entry, index) => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
