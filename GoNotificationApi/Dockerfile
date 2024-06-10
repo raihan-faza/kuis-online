@@ -12,6 +12,12 @@ RUN go mod tidy && go build -o main .
 # Stage 2: Create a minimal image to run the executable
 FROM alpine
 
+# Install ssmtp
+RUN apk --no-cache add ssmtp
+
+# Set up ssmtp configuration
+COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
+
 # Expose port 3000 (if needed)
 EXPOSE 3000
 EXPOSE 8080
