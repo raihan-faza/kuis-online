@@ -12,5 +12,7 @@ urlpatterns = [
     path('auth/', views.auth, name='auth'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
-    path('signin/', views.login, name='signin'),
+    path('signin/', views.signin, name='signin'),
+    path('signup/', views.signup, name='signup'),
+    path('google/', views.google, name='google'),
 ]

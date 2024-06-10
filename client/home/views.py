@@ -53,6 +53,8 @@ def index(request):
 
 
 def dashboard(request):
+    if 'access_token' not in request.session:
+        return redirect('auth')
     quizzes = [
         {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
         {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
@@ -103,12 +105,14 @@ def auth(request):
     }
     return render(request, "pages/login.html", context)
 
-def login(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+from requests import get
+
+# ...
+
+def google(request):
+    if request.method == 'GET':
         try:
-            response = requests.post('http://localhost:5000/auth/users/login', json={'email': email, 'password': password})
+            response = get('http://localhost:3000/users/auth/google')
             if response.status_code == 200:
                 data = response.json()
                 print(data)
@@ -116,9 +120,53 @@ def login(request):
                 request.session['refresh_token'] = data['refresh_token']
                 return redirect('dashboard')
             else:
+                data = response.json()
+                print(data)
+                return redirect('auth')
+        except Exception as e:
+            print(e)
+            return redirect('auth')
+
+def signin(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        print(email, password)
+        try:
+            response = post('http://localhost:3000/users/login', json={'email': email, 'password': password})
+            if response.status_code == 200:
+                data = response.json()
+                print(data)
+                request.session['access_token'] = data['access_token']
+                request.session['refresh_token'] = data['refresh_token']
+                return redirect('dashboard')
+            else:
+                data = response.json()
+                print(data)
                 return redirect('auth')
         except:
             return redirect('auth')
+        
+def signup(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        name = request.POST.get('name')
+        try:
+            response = post('http://localhost:3000/users/signup', json={'email': email, 'password': password, 'name': name, 'gender':'Male', 'phone':'08123456789'})
+            if response.status_code == 200:
+                data = response.json()
+                print(data)
+                request.session['access_token'] = data['access_token']
+                request.session['refresh_token'] = data['refresh_token']
+                return redirect('dashboard')
+            else:
+                data = response.json()
+                print(data)
+                return redirect('auth')
+        except:
+            return redirect('auth')
+
 def create_quiz(request):
     return render(request=request, template_name="quiz/create_quiz.html")
 

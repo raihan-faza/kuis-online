@@ -26,10 +26,12 @@
         {% comment %} <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
           <i class="fab fa-facebook-f"></i>
         </button> {% endcomment %}
-
-        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+        <a href="http://localhost:3000/users/auth/google" class="btn btn-link btn-floating mx-1">
           <i class="fab fa-google"></i>
-        </button>
+        </a>
+        {% comment %} <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-google"></i>
+        </button> {% endcomment %}
 
         {% comment %} <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
           <i class="fab fa-twitter"></i>
@@ -44,13 +46,13 @@
 
       <!-- Email input -->
       <div data-mdb-input-init class="form-outline mb-4">
-        <input type="email" id="email" class="form-control" />
+        <input type="email" name="email" id="email" class="form-control" />
         <label class="form-label" for="email">Email</label>
       </div>
 
       <!-- Password input -->
       <div data-mdb-input-init class="form-outline mb-4">
-        <input type="password" id="password" class="form-control" />
+        <input type="password" id="password" name="password" class="form-control" />
         <label class="form-label" for="password">Password</label>
       </div>
 
@@ -80,7 +82,8 @@
     </form>
   </div>
   <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="tab-register">
-    <form>
+    <form action="{% url 'signup'%}" method="POST">
+      {% csrf_token %}
       <div class="text-center mb-3">
         <p>Sign up with:</p>
         {% comment %} <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
@@ -104,19 +107,19 @@
 
       <!-- Name input -->
       <div data-mdb-input-init class="form-outline mb-4">
-        <input type="text" id="registerName" class="form-control" />
+        <input type="text" name="name" id="registerName" class="form-control" />
         <label class="form-label" for="registerName">Name</label>
       </div>
 
       <!-- Email input -->
       <div data-mdb-input-init class="form-outline mb-4">
-        <input type="email" id="registerEmail" class="form-control" />
+        <input type="email" name="email" id="registerEmail" class="form-control" />
         <label class="form-label" for="registerEmail">Email</label>
       </div>
 
       <!-- Password input -->
       <div data-mdb-input-init class="form-outline mb-4">
-        <input type="password" id="registerPassword" class="form-control" />
+        <input type="password" name="password" id="registerPassword" class="form-control" />
         <label class="form-label" for="registerPassword">Password</label>
       </div>
 

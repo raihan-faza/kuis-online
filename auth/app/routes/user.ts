@@ -100,7 +100,7 @@ router.get('/verify/:token', async (req: Request, res: Response) => {
 
 //login route 
 //POST /users/login
-router.post('/login', loginLimiter, async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
 
