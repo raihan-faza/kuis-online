@@ -19,9 +19,9 @@ COPY package*.json ./
 RUN npm install 
 RUN npm install -g typescript
 
+# RUN npm run rebuild
 # Copy the rest of the application into the Docker container
 COPY . .
-
 # Compile TypeScript to JavaScript
 RUN npm run build
 COPY ./dist /app/dist

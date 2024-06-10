@@ -1,0 +1,109 @@
+
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - quiz-app-network
+    depends_on:
+      - auth
+      - quiz-service
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - quiz-app-network
+  quiz-service:
+    image: quiz-service:latest
+    build:
+      context: ./QuizServiceAPI
+      target: final
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - QuizServiceDatabase__ConnectionString=mongodb://root:example@mongo:27017
+      - QuizServiceDatabase__DatabaseName=QuizService
+      - QuizServiceDatabase__QuizCollectionName=Quiz
+      - QuizServiceDatabase__QuestionsCollectionName=Questions
+      - QuizServiceDatabase__OptionsCollectionName=Options
+    networks:
+      - quiz-app-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        delay: 5s
+        parallelism: 2
+        failure_action: rollback
+        monitor: 5s
+        max_failure_ratio: 0.3
+  auth:
+    image: auth:latest
+    build: ./auth
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./auth/.env
+    volumes:
+      - ./auth:/app:cached
+      - /app/node_modules
+    networks:
+      - quiz-app-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        delay: 5s
+        parallelism: 2
+        failure_action: rollback
+        monitor: 5s
+        max_failure_ratio: 0.3
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - ./post_gres_data:/var/lib/postgresql/data
+    networks:
+      - quiz-app-network
+  grading:
+    image: grading:latest
+    build: ./grading
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/mydatabase
+    networks:
+      - quiz-app-network
+volumes:
+  mongo-data:
+networks:
+  quiz-app-network:
+    driver: overlay
