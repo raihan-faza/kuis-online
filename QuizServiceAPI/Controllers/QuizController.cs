@@ -9,9 +9,9 @@ namespace QuizServiceAPI.Controllers;
 [Route("[controller]")]
 public class QuizController : ControllerBase
 {
-    private readonly IQuizService _quizService;
+    private readonly QuizService _quizService;
 
-    public QuizController(IQuizService quizService) =>
+    public QuizController(QuizService quizService) =>
         _quizService = quizService;
 
     [HttpGet]
