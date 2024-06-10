@@ -21,7 +21,7 @@ func init() {
 func SendNotification(recipient string, subject string, message string) {
 	sender := os.Getenv("SENDER_NAME")
 	smtp_host := os.Getenv("HOST")
-	smtp_port := os.Getenv("PORT")
+	smtp_port := os.Getenv("SMTP_PORT")
 	auth := initializer.SetupSMTP()
 	msg := "From: " + sender + "\n" +
 		"To: " + strings.Join([]string{recipient}, ",") + "\n" +
