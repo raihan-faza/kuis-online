@@ -1,31 +1,26 @@
-from sqlalchemy.future import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from db.database import SessionLocal
-from models.db_models import GradingResultModel
+from db.database import grading_results_collection
+from bson import ObjectId
 
 async def get_leaderboard_data(quiz_id: str):
-    async with SessionLocal() as session:
-        query = select(GradingResultModel).where(GradingResultModel.quiz_id == quiz_id).order_by(GradingResultModel.grade.desc(), GradingResultModel.timestamp.asc())
-        result = await session.execute(query)
-        results = result.scalars().all()
+    query = {"quiz_id": quiz_id}
+    cursor = grading_results_collection.find(query).sort([("grade", -1), ("timestamp", 1)])
+    results = await cursor.to_list(length=100)
 
-        data = [
-            {
-                "user_id": row.user_id,
-                "quiz_id": row.quiz_id,
-                "name": row.name,
-                "correct": row.correct,
-                "false": row.false,
-                "grade": row.grade,
-                "timestamp": row.timestamp,
-            }
-            for row in results
-        ]
-        return data
+    data = [
+        {
+            "user_id": result["user_id"],
+            "quiz_id": result["quiz_id"],
+            "name": result.get("name", ""),
+            "correct": result["correct"],
+            "false": result["false"],
+            "grade": result["grade"],
+            "timestamp": result["timestamp"],
+        }
+        for result in results
+    ]
+    return data
 
 async def get_quiz_ids():
-    async with SessionLocal() as session:
-        query = select(GradingResultModel.quiz_id).distinct()
-        result = await session.execute(query)
-        quiz_ids = result.scalars().all()
-        return quiz_ids
+    cursor = grading_results_collection.distinct("quiz_id")
+    quiz_ids = await cursor.to_list(length=100)
+    return quiz_ids

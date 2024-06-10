@@ -1,12 +1,10 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from motor.motor_asyncio import AsyncIOMotorClient
 import os
 
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+MONGO_URL = os.getenv("MONGO_URL")
 
-engine = create_async_engine(DATABASE_URL, echo=True)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
-
-Base = declarative_base()
+# Create the MongoDB client
+client = AsyncIOMotorClient(MONGO_URL)
+database = client['quiz_db']
+grading_results_collection = database['grade_list']
