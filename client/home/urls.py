@@ -11,7 +11,6 @@ urlpatterns = [
     path('submit/', views.submit_quiz, name='submit_quiz'),
     path('auth/', views.auth, name='auth'),
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('leaderboard/<int:quiz_id>/', views.leaderboard_view, name='leaderboard'),
     path('signin/', views.signin, name='signin'),
     path('signup/', views.signup, name='signup'),
     path('google/', views.google, name='google'),

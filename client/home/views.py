@@ -34,25 +34,15 @@ from django.views.decorators.http import require_POST
 import json
 
 from django.http.response import JsonResponse
-
-# kuis-online/client/views.py
 from django.shortcuts import render
 from django.conf import settings
 from pymongo import DESCENDING
 
 def leaderboard_view(request, quiz_id):
-    collection = settings.MONGO_COLLECTION
-    leaderboard_data = collection.find({'quiz_id': quiz_id}).sort([
-        ('grade', DESCENDING),
-        ('timestamp', DESCENDING)
-    ])
-
     context = {
-        'leaderboard_data': leaderboard_data,
         'quiz_id': quiz_id
     }
     return render(request, 'leaderboard.html', context)
-
 
 
 
