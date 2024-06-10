@@ -40,6 +40,7 @@ from django.shortcuts import render
 from django.conf import settings
 from pymongo import DESCENDING
 
+
 def leaderboard_view(request, quiz_id):
     collection = settings.MONGO_COLLECTION
     leaderboard_data = collection.find({'quiz_id': quiz_id}).sort([
@@ -52,9 +53,6 @@ def leaderboard_view(request, quiz_id):
         'quiz_id': quiz_id
     }
     return render(request, 'leaderboard.html', context)
-
-
-
 
 
 def index(request):
@@ -76,11 +74,11 @@ def index(request):
 def dashboard(request):
     if 'access_token' not in request.session:
         return redirect('auth')
-    
+
     try:
         response = get('http://localhost:5000/api/Quiz')
         quizzes = response.json()
-        
+
         # quizzes = [
         #     {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
         #     {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
@@ -103,30 +101,27 @@ def tables(request):
     return render(request, "pages/dynamic-tables.html", context)
 
 
-def attempt_quiz(request):
-    context = {
-        'questions': [
-            {
-                'number': '1',
-                'question': 'test_question',
-                'choices': {
-                    'a': 'apa',
-                    'b': 'bbbb',
-                    'c': 'ccc',
-                }
-            },
-            {
-                'number': '2',
-                'question': 'test_question_2',
-                'choices': {
-                    'a': 'apa',
-                    'b': 'bbbb',
-                    'c': 'ccc',
-                }
-            },
-        ]
-    }
-    return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context)
+def attempt_quiz(request, quiz_id):
+    question_response = get(
+        url=f"http://localhost:8080/Quiz/{quiz_id}/question")
+    question_data = question_response.json()
+    questions = [{"id": question['Id'], "text": question['Prompt']}
+                 for question in question_data]
+    context = {}
+    for question in questions:
+        question_id = question['id']
+        question_text = question['text']
+        option_response = get(
+            f"http://localhost:8080/Quiz/{question_id}/option")
+        option_data = option_response.json()
+        # return JsonResponse(data=option_data, safe=False)
+        options = [option['Text'] for option in option_data]
+        context[question_id] = {
+            "text": question_text,
+            "options": options
+        }
+    # return JsonResponse(data=context, safe=False)
+    return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context={"questions": context})
 
 
 def auth(request):
@@ -210,12 +205,16 @@ def leaderboard(request):
 @require_POST
 def submit_create_quiz(request):
     quiz_name = request.POST.get('quiz_name')
+    desc = request.POST.get('description')
+    duration = request.POST.get('duration')
+    open_time = request.POST.get('open_time')
+    close_time = request.POST.get('close_time')
     questions = request.POST.getlist('question[]')
     options = request.POST.getlist('option[]')
     correct_options = request.POST.getlist('correct_option')
     try:
-        quiz_response = post(url="http://localhost:8080/Quiz", json={"Name": f"{quiz_name}", "Description": "test desc",
-                                                                     "DurationMinute": "20", "OpenTime": "2024-09-02T13:13:13.866Z", "CloseTime": "2024-10-02T13:13:13.866Z"})
+        quiz_response = post(url="http://localhost:8080/Quiz", json={"Name": f"{quiz_name}", "Description": f"{desc}",
+                                                                     "DurationMinute": f"{duration}", "OpenTime": f"{open_time}", "CloseTime": f"{close_time}"})
         quiz_id = quiz_response.json()['Id']
     except:
         return JsonResponse(data={"message": "failed to create quiz"})
@@ -224,7 +223,7 @@ def submit_create_quiz(request):
         question_response = post(
             url=f"http://localhost:8080/Quiz/{quiz_id}/question", json={"Prompt": f"{question_text}", "CorrectOptionId": None})
         question_id = question_response.json()['Id']
-        for i, option_text in enumerate(options):
+        for _, option_text in enumerate(options[i*4:i*4+4]):
             options_response = post(
                 url=f"http://localhost:8080/Quiz/{question_id}/option", json={"Text": f"{option_text}"})
         post(
@@ -239,8 +238,8 @@ def submit_create_quiz(request):
 
     json_data = json.dumps(quiz_data)
        '''
-
-    return redirect('dashboard')
+    response = get(url=f"http://localhost:8080/Quiz/{quiz_id}/question")
+    return JsonResponse(data=response.json(), safe=False)
 
 
 '''
@@ -250,12 +249,16 @@ def submit_create_quiz(request):
         return JsonResponse({"Message": "failed to create quiz"}, safe=False)
 '''
 
-'''
+
 @require_POST
-def submit_add_question(request, id):
+def submit_attempt_quiz(request):
     questions = request.POST.getlist('question[]')
     options = request.POST.getlist('option[]')
     correct_options = request.POST.getlist('correct_option')
-    return
-
-'''
+    user_responses = {}
+    for question_id, user_answer in request.POST.items():
+        if question_id.startswith('question'):
+            question_id = question_id.replace(
+                'question', '')  # Remove 'question' prefix
+            user_responses[question_id] = user_answer
+    return JsonResponse(data=user_responses, safe=False)
