@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  notification:
+    image: golang-notification:latest
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "3000:8080"
