@@ -31,13 +31,6 @@ public class QuizService : IQuizService
             quizServiceDatabaseSettings.Value.OptionsCollectionName);
     }
 
-    public QuizService()
-    {
-        _quizCollection = Mock.Of<IMongoCollection<Quiz>>();
-        _questionsCollection = Mock.Of<IMongoCollection<Question>>();
-        _optionsCollection = Mock.Of<IMongoCollection<Option>>();
-    }
-
     // Quiz
 
     public async Task<List<Quiz>> GetAsync() =>

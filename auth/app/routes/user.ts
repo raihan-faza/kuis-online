@@ -100,7 +100,7 @@ router.get('/verify/:token', async (req: Request, res: Response) => {
 
 //login route 
 //POST /users/login
-router.post('/login', loginLimiter, async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
 
@@ -268,7 +268,12 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 //GET /users/auth/google/callback
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login', session: false }), (req:RequestWithUser, res:Response) => {
     // client.setex(req.user?.refresh_token, 604800, JSON.stringify({ refresh_token: req.user?.refresh_token }));
-    res.status(200).json({ message: 'Login successful', access_token: req.user?.access_token, refresh_token: req.user?.refresh_token});
+    // res.status(200).json({ message: 'Login successful', access_token: req.user?.access_token, refresh_token: req.user?.refresh_token});
+    const accessToken = req.user?.access_token;
+    const refreshToken = req.user?.refresh_token;
+    res.set('Access-Token', accessToken);
+    res.set('Refresh-Token', refreshToken);
+    res.redirect(301, 'http://localhost:8000/dashboard');
 });
 
 

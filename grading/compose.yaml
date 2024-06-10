@@ -1,22 +1,22 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
+  mongodb:
+    image: mongodb:latest
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      MONGODB_USER: user
+      MONGODB_PASSWORD: password
+      MONGODB_DB: mydatabase
     volumes:
-      - ./post_gres_data:/var/lib/postgresql/data
+      - ./mongo_db_data:/var/lib/mongodb/data
   grading:
     image: grading:latest
     build: .
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      - mongodb
     environment:
-      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/mydatabase
+      - DATABASE_URL=mongodb+srv://asyrafna:nugiGOJ2Gcu8nf59@quiz.skssdkk.mongodb.net/?retryWrites=true&w=majority&appName=Quiz

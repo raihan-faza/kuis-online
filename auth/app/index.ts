@@ -4,9 +4,9 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import messageRouter from './routes/message';
-import questionRouter from './routes/questions';
+// import questionRouter from './routes/questions';
 import userRouter from './routes/user'; // Import the userRouter module
-import eventRouter from './routes/events';
+// import eventRouter from './routes/events';
 import passport from 'passport';
 import { initializePassport } from './middlewares/passport';
 
@@ -38,9 +38,9 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/messages', messageRouter);
-app.use('/questions', questionRouter);
+// app.use('/questions', questionRouter);
 app.use('/users', userRouter); // Add the userRouter module
-app.use('/events', eventRouter)
+// app.use('/events', eventRouter)
 
 
 // Error handler
