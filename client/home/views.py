@@ -69,13 +69,13 @@ def dashboard(request):
     
     try:
         response = get('http://localhost:5000/api/Quiz')
-        # quizzes = response.json()
+        quizzes = response.json()
         
-        quizzes = [
-            {'Id':'Capek1','Name': 'Quiz 1', 'Description': 'This is quiz 1', 'CreatedBy': 'User 1'},
-            {'Id':'Capek2','Name': 'Quiz 2', 'Description': 'This is quiz 2', 'CreatedBy': 'User 2'},
-            #     # Add more quizzes as needed
-        ]
+        # quizzes = [
+        #     {'Id':'Capek1','Name': 'Quiz 1', 'Description': 'This is quiz 1', 'CreatedBy': 'User 1'},
+        #     {'Id':'Capek2','Name': 'Quiz 2', 'Description': 'This is quiz 2', 'CreatedBy': 'User 2'},
+        #     #     # Add more quizzes as needed
+        # ]
         context = {
             'segment': 'dashboard',
             'quizzes': quizzes,
