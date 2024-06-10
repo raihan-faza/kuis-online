@@ -24,7 +24,6 @@ services:
       - mongo-data:/data/db
     networks:
       - quiz-app-network
-
   quiz-service:
     image: quiz-service:latest
     build:
@@ -80,6 +79,29 @@ services:
         failure_action: rollback
         monitor: 5s
         max_failure_ratio: 0.3
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - ./post_gres_data:/var/lib/postgresql/data
+    networks:
+      - quiz-app-network
+  grading:
+    image: grading:latest
+    build: ./grading
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/mydatabase
+    networks:
+      - quiz-app-network
 volumes:
   mongo-data:
 networks:
