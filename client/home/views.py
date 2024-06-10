@@ -21,7 +21,6 @@ from django.views.generic import CreateView
 from django.contrib.auth import logout
 
 from django.contrib.auth.decorators import login_required
-import requests
 
 from .models import *
 
@@ -106,15 +105,12 @@ def attempt_quiz(request):
     }
     return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context)
 
+
 def auth(request):
     context = {
         'segment': 'login'
     }
     return render(request, "pages/login.html", context)
-
-from requests import get
-
-# ...
 
 
 def google(request):
@@ -135,13 +131,15 @@ def google(request):
             print(e)
             return redirect('auth')
 
+
 def signin(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
         print(email, password)
         try:
-            response = post('http://localhost:3000/users/login', json={'email': email, 'password': password})
+            response = post('http://localhost:3000/users/login',
+                            json={'email': email, 'password': password})
             if response.status_code == 200:
                 data = response.json()
                 print(data)
@@ -154,14 +152,16 @@ def signin(request):
                 return redirect('auth')
         except:
             return redirect('auth')
-        
+
+
 def signup(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
         name = request.POST.get('name')
         try:
-            response = post('http://localhost:3000/users/signup', json={'email': email, 'password': password, 'name': name, 'gender':'Male', 'phone':'08123456789'})
+            response = post('http://localhost:3000/users/signup', json={
+                            'email': email, 'password': password, 'name': name, 'gender': 'Male', 'phone': '08123456789'})
             if response.status_code == 200:
                 data = response.json()
                 print(data)
@@ -175,11 +175,14 @@ def signup(request):
         except:
             return redirect('auth')
 
+
 def create_quiz(request):
     return render(request=request, template_name="quiz/create_quiz.html")
 
+
 def leaderboard(request):
     return render(request=request, template_name="pages/Leaderboard.html")
+
 
 @require_POST
 def submit_quiz(request):
@@ -192,6 +195,12 @@ def submit_quiz(request):
         'quiz_name': quiz_name,
         'questions': []
     }
+    try:
+        response = post(url="http://localhost:8081/quiz", data={"Id": "1", "Name": f"{quiz_name}", "Description": "test desc",
+                                                                "DurationMinute": "20", "OpenTime": "2024-09-02T13:13:13.866Z", "CloseTime": "2024-10-02T13:13:13.866Z"})
+        return response.json()
+    except:
+        return JsonResponse(data={"message": "failed to create quiz"})
 
     for i, question_text in enumerate(questions):
         question_dict = {
@@ -202,8 +211,12 @@ def submit_quiz(request):
         quiz_data['questions'].append(question_dict)
 
     json_data = json.dumps(quiz_data)
-    try:
-        post(url="urlirfan", data=json_data)
+    return JsonResponse(json_data, safe=False)
+
+
+'''
+     try:
+        post(url="http://localhost:5000", data=json_data)
     except:
         return JsonResponse({"Message": "failed to create quiz"}, safe=False)
-    return JsonResponse(json_data, safe=False)
+'''
