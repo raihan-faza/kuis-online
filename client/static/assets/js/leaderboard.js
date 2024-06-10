@@ -1,5 +1,3 @@
-// kuis-online/client/static/js/leaderboard.js
-
 document.addEventListener("DOMContentLoaded", function() {
     const leaderboardContainer = document.getElementById("leaderboard-container");
     const quizId = leaderboardContainer.getAttribute("data-quiz-id");
@@ -35,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
             row.appendChild(gradeCell);
 
             const timestampCell = document.createElement("td");
-            timestampCell.textContent = entry.timestamp;
+            timestampCell.textContent = new Date(entry.timestamp).toLocaleString(); // Convert timestamp to local date string
             row.appendChild(timestampCell);
 
             tbody.appendChild(row);

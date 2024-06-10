@@ -1,26 +1,28 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block breadcrumbs %}{% endblock breadcrumbs %}
+{% block breadcrumbs %}Dashboard Page{% endblock breadcrumbs %}
 
 {% block content %}
   <!-- [ Main Content ] start -->
   <div class="row">
     {% for quiz in quizzes %}
     <div class="col-md-6 col-xl-3">
+     <a href="{% url 'create_quiz' quiz.Id %}">
       <div class="card daily-sales">
         <div class="card-block">
-          <h6 class="mb-4">{{quiz.name}}</h6>
+          <h6 class="mb-4">{{quiz.Name}}</h6>
           <div class="row d-flex align-items-center">
             <div class="col-9">
-              <h3 class="f-w-300 d-flex align-items-center m-b-0">{{quiz.description}}</h3>
+              <h3 class="f-w-300 d-flex align-items-center m-b-0">{{quiz.Description}}</h3>
             </div>
           </div>
           <div class="m-t-30" style="height: 7px;">
-            <h5>Created By: {{quiz.createdBy}} </h5>
+            <h5>Created By: {{quiz.CreatedBy}} </h5>
           </div>
         </div>
       </div>
+      </a>
     </div>
     {% empty %}
     <div class="col-12">

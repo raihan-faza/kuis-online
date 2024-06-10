@@ -34,22 +34,13 @@ from django.views.decorators.http import require_POST
 import json
 
 from django.http.response import JsonResponse
-
-# kuis-online/client/views.py
 from django.shortcuts import render
 from django.conf import settings
 from pymongo import DESCENDING
 
 
 def leaderboard_view(request, quiz_id):
-    collection = settings.MONGO_COLLECTION
-    leaderboard_data = collection.find({'quiz_id': quiz_id}).sort([
-        ('grade', DESCENDING),
-        ('timestamp', DESCENDING)
-    ])
-
     context = {
-        'leaderboard_data': leaderboard_data,
         'quiz_id': quiz_id
     }
     return render(request, 'leaderboard.html', context)
@@ -77,13 +68,15 @@ def dashboard(request):
 
     try:
         response = get('http://localhost:5000/api/Quiz')
-        quizzes = response.json()
+        # quizzes = response.json()
 
-        # quizzes = [
-        #     {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
-        #     {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
-        #     #     # Add more quizzes as needed
-        # ]
+        quizzes = [
+            {'Id': 'Capek1', 'Name': 'Quiz 1',
+                'Description': 'This is quiz 1', 'CreatedBy': 'User 1'},
+            {'Id': 'Capek2', 'Name': 'Quiz 2',
+                'Description': 'This is quiz 2', 'CreatedBy': 'User 2'},
+            #     # Add more quizzes as needed
+        ]
         context = {
             'segment': 'dashboard',
             'quizzes': quizzes,
@@ -194,8 +187,11 @@ def signup(request):
             return redirect('auth')
 
 
-def create_quiz(request):
-    return render(request=request, template_name="quiz/create_quiz.html")
+def create_quiz(request, Id):
+    context = {
+        'quiz_id': Id
+    }
+    return render(request=request, template_name="quiz/create_quiz.html", context=context)
 
 
 def leaderboard(request):
@@ -226,8 +222,8 @@ def submit_create_quiz(request):
         for _, option_text in enumerate(options[i*4:i*4+4]):
             options_response = post(
                 url=f"http://localhost:8080/Quiz/{question_id}/option", json={"Text": f"{option_text}"})
-        post(
-            url=f"http://localhost:8080/{quiz_id}/question/{question_id}", json={"Prompt": f"{question_response.json()["Prompt"]}", "CorrectOptions": f"{correct_options[i]}"})
+        post(url=f"http://localhost:8080/{quiz_id}/question/{question_id}", json={"Prompt": f"{
+             question_response.json()["Prompt"]}", "CorrectOptions": f"{correct_options[i]}"})
     '''
         question_dict = {
             'question_text': question_text,

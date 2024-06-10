@@ -110,7 +110,7 @@ async def get_grade(info: req_model):
     questions, options = [], []
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(f"http://your-friends-quiz-service.com/api/quizzes/{quiz_id}/answer/")
+        response = await client.get(f"http://localhost:8080/Quiz/{quiz_id}/answer/")
         response.raise_for_status()
         questions = response.json()
 
@@ -122,7 +122,7 @@ async def get_grade(info: req_model):
 
     for question in questions:
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"http://your-friends-quiz-service.com/api/quizzes/{question["Id"]}/option/")
+            response = await client.get(f"http://localhost:8080/Quiz/{question["Id"]}/option/")
             response.raise_for_status()
             options = response.json()
 
