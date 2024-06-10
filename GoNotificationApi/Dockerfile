@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.21.10-alpine
 
 WORKDIR /NotificationService
 
