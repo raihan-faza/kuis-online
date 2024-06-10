@@ -5,6 +5,7 @@ from models.db_models import GradingResultModel
 from db.database import SessionLocal
 from datetime import datetime
 from pydantic import BaseModel
+from sqlalchemy.sql import text
 
 router = APIRouter()
 
@@ -18,6 +19,11 @@ class GradingResult(BaseModel):
 async def get_db():
     async with SessionLocal() as session:
         yield session
+
+@router.get("/grade")
+async def get_grading_results(db: AsyncSession = Depends(get_db)):
+    results = await db.execute(text("SELECT * FROM grading_results"))
+    return results
 
 @router.post("/grade", response_model=GradingResult)
 async def grade_submission(submission: QuizSubmission, db: AsyncSession = Depends(get_db)):
