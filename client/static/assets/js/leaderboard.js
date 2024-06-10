@@ -1,28 +1,44 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Fetch the quiz ID from local storage
-    const quizId = localStorage.getItem('quiz_id');
+// kuis-online/client/static/js/leaderboard.js
 
-    if (quizId) {
-       
-        fetch(`/leaderboard/${quizId}`)
+document.addEventListener("DOMContentLoaded", function() {
+    const leaderboardContainer = document.getElementById("leaderboard-container");
+    const quizId = leaderboardContainer.getAttribute("data-quiz-id");
+
+    fetchLeaderboardData(quizId);
+
+    function fetchLeaderboardData(quizId) {
+        fetch(`/api/leaderboard/${quizId}/`)
             .then(response => response.json())
             .then(data => {
-                const tableBody = document.querySelector("#leaderboard-table tbody");
-                tableBody.innerHTML = ""; 
-                data.forEach((entry, index) => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td class="rank">${index + 1}</td>
-                        <td class="name">${entry.name}</td>
-                        <td class="points">${entry.grade} Points</td>
-                        <td class="timestamp">${entry.timestamp}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            });
-    } else {
-        // Handle case where quiz ID is not found
-        const tableBody = document.querySelector("#leaderboard-table tbody");
-        tableBody.innerHTML = "<tr><td colspan='4'>No quiz ID found. Please attempt a quiz first.</td></tr>";
+                updateLeaderboardTable(data);
+            })
+            .catch(error => console.error('Error fetching leaderboard data:', error));
+    }
+
+    function updateLeaderboardTable(data) {
+        const tbody = document.querySelector("#leaderboard-table tbody");
+        tbody.innerHTML = "";
+
+        data.forEach((entry, index) => {
+            const row = document.createElement("tr");
+
+            const rankCell = document.createElement("td");
+            rankCell.textContent = index + 1;
+            row.appendChild(rankCell);
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = entry.user_id;  // Adjust to use user's name if available
+            row.appendChild(nameCell);
+
+            const gradeCell = document.createElement("td");
+            gradeCell.textContent = entry.grade;
+            row.appendChild(gradeCell);
+
+            const timestampCell = document.createElement("td");
+            timestampCell.textContent = entry.timestamp;
+            row.appendChild(timestampCell);
+
+            tbody.appendChild(row);
+        });
     }
 });
