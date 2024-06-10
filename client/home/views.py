@@ -2,6 +2,7 @@ from django.shortcuts import (
     render,
     redirect
 )
+from django.http import HttpResponse
 from admin_datta.forms import (
     RegistrationForm,
     LoginForm,
@@ -54,7 +55,11 @@ def index(request):
 
 def dashboard(request):
     if 'access_token' not in request.session:
-        return redirect('auth')
+        access_token = request.headers.get('Access-Token')
+        if access_token is None:
+            return redirect('auth')
+        request.session['access_token'] = access_token
+        request.session['refresh_token'] = request.headers.get('Refresh-Token')
     quizzes = [
         {'name': 'Quiz 1', 'description': 'This is quiz 1', 'createdBy': 'User 1'},
         {'name': 'Quiz 2', 'description': 'This is quiz 2', 'createdBy': 'User 2'},
@@ -108,6 +113,7 @@ def auth(request):
 from requests import get
 
 # ...
+
 
 def google(request):
     if request.method == 'GET':
