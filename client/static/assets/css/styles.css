@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#leaderboard-container {
+    width: 400px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: left;
+    padding: 20px;
+}
+
+#leaderboard-container h1 {
+    margin: 0;
+    padding-bottom: 16px;
+    font-size: 24px;
+    color: #333;
+}
+
+#leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#leaderboard-table th, #leaderboard-table td {
+    padding: 12px;
+    text-align: left;
+}
+
+#leaderboard-table th {
+    background-color: #ffffff;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    font-size: 16px;
+}
+
+#leaderboard-table tbody tr {
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#leaderboard-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#leaderboard-table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+#leaderboard-table tbody tr td.rank {
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 8px;
+    width: 10%;
+}
+
+#leaderboard-table tbody tr td.name {
+    flex-grow: 1;
+    text-align: left;
+}
+
+#leaderboard-table tbody tr td.points {
+    color: #4CAF50;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#leaderboard-table tbody tr td.timestamp {
+    width: 25%;
+}

@@ -45,9 +45,7 @@ router.post('/signup', validateUserInput, async (req: Request, res: Response) =>
         const {
             name,
             email,
-            phone,
             password,
-            gender
         } = req.body;
 
         //check if user already exists
@@ -59,7 +57,7 @@ router.post('/signup', validateUserInput, async (req: Request, res: Response) =>
         const hashedPassword = await bcrypt.hash(password, salt);
 
         //send email verification
-        const data = { name, email, phone, password: hashedPassword, gender, verified: false}
+        const data = { name, email, password: hashedPassword, verified: false}
         const newUser = new User(data);
         const isSent = await sendMail(data.email);
         if (!isSent) return res.status(500).json({ error: 'Error sending verification email' });
@@ -102,7 +100,7 @@ router.get('/verify/:token', async (req: Request, res: Response) => {
 
 //login route 
 //POST /users/login
-router.post('/login', loginLimiter, async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
 
@@ -112,7 +110,7 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
         if (!validPassword || !user) return res.status(401).json({ error: 'Invalid credentials' });
 
         //generate token if valid so that the token can be stored in session/local storage
-        const access_token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '10m' })
+        const access_token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '24h' })
         const refresh_token = jwt.sign({ email: user.email, id: user._id }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: '7d' })
         // client.setex(refresh_token, 604800, JSON.stringify({ refresh_token: refresh_token }));
         res.status(200).json(
@@ -270,7 +268,12 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 //GET /users/auth/google/callback
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login', session: false }), (req:RequestWithUser, res:Response) => {
     // client.setex(req.user?.refresh_token, 604800, JSON.stringify({ refresh_token: req.user?.refresh_token }));
-    res.status(200).json({ message: 'Login successful', access_token: req.user?.access_token, refresh_token: req.user?.refresh_token});
+    // res.status(200).json({ message: 'Login successful', access_token: req.user?.access_token, refresh_token: req.user?.refresh_token});
+    const accessToken = req.user?.access_token;
+    const refreshToken = req.user?.refresh_token;
+    res.set('Access-Token', accessToken);
+    res.set('Refresh-Token', refreshToken);
+    res.redirect(301, 'http://localhost:8000/dashboard');
 });
 
 
