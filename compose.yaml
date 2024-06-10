@@ -109,6 +109,17 @@ services:
       - "1000:1000"
     networks:
       - quiz-app-network
+  notification:
+    image: notification:latest
+    build: ./GoNotificationApi
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "4000:8080"
+    networks:
+      - quiz-app-network
 volumes:
   mongo-data:
 networks:
