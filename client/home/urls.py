@@ -17,6 +17,6 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('signup/', views.signup, name='signup'),
     path('google/', views.google, name='google'),
-    path('submit/quiz/attempt/', views.submit_attempt_quiz,
+    path('submit/quiz/attempt/<str:quiz_id>/', views.submit_attempt_quiz,
          name='submit_attempt_quiz')
 ]

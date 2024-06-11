@@ -17,10 +17,11 @@
 <body>
     <div class="container">
         <h2>Selamat Mengerjakan &#128073; &#128072;</h2>
-        <form action="{% url 'submit_attempt_quiz' %}" method="post">
+        <form action="{% url 'submit_attempt_quiz' quiz_id=quiz_id %}" method="post">
             {% csrf_token %}
             {% for question_id, question_data in questions.items %}
             <div class="form-group">
+                <input type="hidden" value="{{question_id}}" name="question_id">
                 <div class="card">
                     <div class="card-header">
                         {{ question_data.text }}

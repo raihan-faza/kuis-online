@@ -69,7 +69,7 @@ def dashboard(request):
     try:
         response = get('http://localhost:5000/api/Quiz')
         quizzes = response.json()
-        
+
         # quizzes = [
         #     {'Id':'Capek1','Name': 'Quiz 1', 'Description': 'This is quiz 1', 'CreatedBy': 'User 1'},
         #     {'Id':'Capek2','Name': 'Quiz 2', 'Description': 'This is quiz 2', 'CreatedBy': 'User 2'},
@@ -109,10 +109,10 @@ def attempt_quiz(request, quiz_id):
         options = [option['Text'] for option in option_data]
         context[question_id] = {
             "text": question_text,
-            "options": options
+            "options": options,
         }
     # return JsonResponse(data=context, safe=False)
-    return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context={"questions": context})
+    return render(request, "/home/lahh/projects/scalable/client/templates/quiz/show_question.html", context={"questions": context, "quiz_id": quiz_id})
 
 
 def auth(request):
@@ -233,7 +233,8 @@ def submit_create_quiz(request):
     json_data = json.dumps(quiz_data)
        '''
     response = get(url=f"http://localhost:8080/Quiz/{quiz_id}/question")
-    return JsonResponse(data=response.json(), safe=False)
+    # return JsonResponse(data=response.json(), safe=False)
+    return redirect('dashboard')
 
 
 '''
@@ -245,14 +246,21 @@ def submit_create_quiz(request):
 
 
 @require_POST
-def submit_attempt_quiz(request):
+def submit_attempt_quiz(request, quiz_id):
     questions = request.POST.getlist('question[]')
     options = request.POST.getlist('option[]')
     correct_options = request.POST.getlist('correct_option')
+    quiz_id = quiz_id
     user_responses = {}
     for question_id, user_answer in request.POST.items():
         if question_id.startswith('question'):
             question_id = question_id.replace(
-                'question', '')  # Remove 'question' prefix
+                'question', '')
             user_responses[question_id] = user_answer
-    return JsonResponse(data=user_responses, safe=False)
+    context = {
+        "quiz_id": quiz_id,
+        "answer": user_responses
+    }
+    post(url="http://localhost:3003", data=context)
+    return redirect('dashboard')
+    # return JsonResponse(data=context, safe=False)
