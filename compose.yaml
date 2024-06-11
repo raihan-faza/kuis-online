@@ -24,6 +24,19 @@ services:
       - mongo-data:/data/db
     networks:
       - quiz-app-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        delay: 5s
+        parallelism: 2
+        failure_action: rollback
+        monitor: 5s
+        max_failure_ratio: 0.3
   quiz-service:
     image: quiz-service:latest
     build:
@@ -102,6 +115,19 @@ services:
       - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/mydatabase
     networks:
       - quiz-app-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        delay: 5s
+        parallelism: 2
+        failure_action: rollback
+        monitor: 5s
+        max_failure_ratio: 0.3
   leaderboard:
     image: leaderboard:latest
     build: ./leaderboard_project
@@ -109,6 +135,19 @@ services:
       - "1000:1000"
     networks:
       - quiz-app-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        delay: 5s
+        parallelism: 2
+        failure_action: rollback
+        monitor: 5s
+        max_failure_ratio: 0.3
   notification:
     image: notification:latest
     build: ./GoNotificationApi
