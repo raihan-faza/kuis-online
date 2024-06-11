@@ -18,5 +18,6 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('google/', views.google, name='google'),
     path('submit/quiz/attempt/<str:quiz_id>/', views.submit_attempt_quiz,
-         name='submit_attempt_quiz')
+         name='submit_attempt_quiz'),
+    path('quiz/submitted', views.done, name='submitted')
 ]

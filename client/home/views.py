@@ -185,11 +185,14 @@ def signup(request):
             return redirect('auth')
 
 
-def create_quiz(request, Id):
-    context = {
+def create_quiz(request):
+    '''
+     context = {
         'quiz_id': Id
-    }
-    return render(request=request, template_name="quiz/create_quiz.html", context=context)
+
+   }
+    '''
+    return render(request=request, template_name="quiz/create_quiz.html")
 
 
 def leaderboard(request):
@@ -234,7 +237,7 @@ def submit_create_quiz(request):
        '''
     response = get(url=f"http://localhost:8080/Quiz/{quiz_id}/question")
     # return JsonResponse(data=response.json(), safe=False)
-    return redirect('dashboard')
+    return redirect(f'http://localhost:8000/quiz/attempt/{quiz_id}')
 
 
 '''
@@ -262,5 +265,9 @@ def submit_attempt_quiz(request, quiz_id):
         "answer": user_responses
     }
     post(url="http://localhost:3003/grade", data=context)
-    return redirect('dashboard')
+    return redirect('submitted')
     # return JsonResponse(data=context, safe=False)
+
+
+def done(request):
+    return render(request, "quiz/quiz_done.html")
