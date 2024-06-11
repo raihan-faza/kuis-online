@@ -261,6 +261,6 @@ def submit_attempt_quiz(request, quiz_id):
         "quiz_id": quiz_id,
         "answer": user_responses
     }
-    post(url="http://localhost:3003", data=context)
+    post(url="http://localhost:3003/grade", data=context)
     return redirect('dashboard')
     # return JsonResponse(data=context, safe=False)
