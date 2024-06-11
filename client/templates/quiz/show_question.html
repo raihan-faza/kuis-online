@@ -16,7 +16,7 @@
 
 <body>
     <div class="container">
-        <h2>Selamat Mengerjakan &#128073; &#128072;</h2>
+        <h2>Selamat Mengerjakan </h2>
         <form action="{% url 'submit_attempt_quiz' quiz_id=quiz_id %}" method="post">
             {% csrf_token %}
             {% for question_id, question_data in questions.items %}
