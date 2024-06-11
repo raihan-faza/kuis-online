@@ -1,22 +1,8 @@
-# Core
-django==4.2.9
+Django==4.2.9
+django_admin_datta==1.0.10
+django_dynamic_datatb==1.0.25
+httpx==0.27.0
+pymongo==4.7.3
 python-dotenv==1.0.1
+selenium==4.21.0
 str2bool==1.1
-
-# UI 
-django-admin-datta==1.0.10
-
-# Tooling
-django-dynamic-datatb==1.0.25
-django-api-generator==1.0.17
-django-debug-toolbar==4.2.0
-
-# Deployment
-whitenoise==6.6.0
-gunicorn==21.2.0
-str2bool
-
-
-# DB Layer
-# psycopg2-binary
-# mysqlclient
