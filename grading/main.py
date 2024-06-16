@@ -23,82 +23,82 @@ async def root():
     return {"message": "This is the root"}
 
 # patch = post
-@app.post("/grade-test")
-async def grade_test(info: req_model):
-    questions = info.questions
-    answers = info.user_answers
-    keys = info.options
-    points = info.points
+# @app.post("/grade-test")
+# async def grade_test(info: req_model):
+#     questions = info.questions
+#     answers = info.user_answers
+#     keys = info.options
+#     points = info.points
 
-    grade = 0
-    correct = 0
-    false = 0
+#     grade = 0
+#     correct = 0
+#     false = 0
 
-    for i in range(len(keys)):
-        if answers[i] == keys[i]:
-            grade += points
-            correct += 1
-            break
-        else:
-            false += 1
-            break
+#     for i in range(len(keys)):
+#         if answers[i] == keys[i]:
+#             grade += points
+#             correct += 1
+#             break
+#         else:
+#             false += 1
+#             break
     
-    doc = {
-        "user_id": info.user_id,
-        "quiz_id": info.quiz_id,
-        "grade": float("{:.2f}".format(grade / len(questions))),
-        "correct": correct,
-        "false": false,
-        "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    }
+#     doc = {
+#         "user_id": info.user_id,
+#         "quiz_id": info.quiz_id,
+#         "grade": float("{:.2f}".format(grade / len(questions))),
+#         "correct": correct,
+#         "false": false,
+#         "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+#     }
     
-    temp = grade_collection.insert_one(doc)
+#     temp = grade_collection.insert_one(doc)
 
-    return {
-        "message": "Testing Succeed",
-    }
+#     return {
+#         "message": "Testing Succeed",
+#     }
 
-@app.post("/simulation")
-async def simulate(info: req_model):
-    questions = list(eval(info.questions))
-    answers = list(eval(info.user_answers))
-    options = list(eval(info.options))
-    points = info.points
+# @app.post("/simulation")
+# async def simulate(info: req_model):
+#     questions = list(eval(info.questions))
+#     answers = list(eval(info.user_answers))
+#     options = list(eval(info.options))
+#     points = info.points
 
-    grade = 0
-    correct = 0
-    false = 0
+#     grade = 0
+#     correct = 0
+#     false = 0
 
-    for question in questions:
-        # correct_ans = options[f'{question['correctID']}']
-        for option in options:
-            if option['id'] == question['correct_id']:
-                correct_ans = option['text']
-                break
+#     for question in questions:
+#         # correct_ans = options[f'{question['correctID']}']
+#         for option in options:
+#             if option['id'] == question['correct_id']:
+#                 correct_ans = option['text']
+#                 break
 
-        for answer in answers:
-            if answer['q_id'] == question['id'] and answer['answer'] == correct_ans:
-                grade += points
-                correct += 1
-                break
-            else:
-                false += 1
-                break
+#         for answer in answers:
+#             if answer['q_id'] == question['id'] and answer['answer'] == correct_ans:
+#                 grade += points
+#                 correct += 1
+#                 break
+#             else:
+#                 false += 1
+#                 break
     
-    doc = {
-        "user_id": info.user_id,
-        "quiz_id": info.quiz_id,
-        "grade": float("{:.2f}".format(grade / len(questions))),
-        "correct": correct,
-        "false": false,
-        "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    }
+#     doc = {
+#         "user_id": info.user_id,
+#         "quiz_id": info.quiz_id,
+#         "grade": float("{:.2f}".format(grade / len(questions))),
+#         "correct": correct,
+#         "false": false,
+#         "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+#     }
     
-    temp = simulate_collection.insert_one(doc)
+#     temp = simulate_collection.insert_one(doc)
 
-    return {
-        "message": "Simulation Succeed"
-    }
+#     return {
+#         "message": "Simulation Succeed"
+#     }
 
 @app.post("/grade")
 async def get_grade(info: req_model):
