@@ -39,11 +39,16 @@ from django.conf import settings
 from pymongo import DESCENDING
 
 
+from .models import quiz_collection
+
 def leaderboard_view(request, quiz_id):
     context = {
-        'quiz_id': quiz_id
+        'quiz_id': quiz_id,
+        "user_data": quiz_collection.find(
+            {"quiz_id":int(quiz_id)}
+        ).sort('grade', -1)
     }
-    return render(request, 'leaderboard.html', context)
+    return render(request, 'pages/Leaderboard.html', context)
 
 
 def index(request):

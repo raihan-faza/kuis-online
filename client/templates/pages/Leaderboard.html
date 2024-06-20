@@ -1,27 +1,39 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard for Quiz {{ quiz_id }}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
 </head>
 <body>
     <div id="leaderboard-container" data-quiz-id="{{ quiz_id }}">
         <h1>Leaderboard for Quiz {{ quiz_id }}</h1>
-        <table id="leaderboard-table">
+        <table id="leaderboard-table" class="table">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th>Rank</th>
                     <th>Name</th>
                     <th>Grade</th>
                     <th>Timestamp</th>
                 </tr>
             </thead>
             <tbody>
+                {% for quiz in user_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ quiz.user_id }}</td>
+                    <td>{{ quiz.grade }}</td>
+                    <td>{{ quiz.timestamp }}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
+        <a href="/" class="btn btn-primary">Back Home</a>
     </div>
-    <script src="{% static 'js/leaderboard.js' %}"></script>
+    <script src="{% static 'assets/js/leaderboard.js' %}"></script>
 </body>
 </html>
